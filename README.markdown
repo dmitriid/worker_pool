@@ -25,6 +25,11 @@ Hence, there a new function, worker_pool_sup:start_link/1, that can accept the f
   `Main = function(), arity: 1`
 
   specify a function to be run when a worker is invoked with no arguments. The function will be passed he result of init function.
+* `{worker_count, WCount}`
+  `WCount = integer()`
+   
+   specify number of workers to run. By defalt equals to the number of CPU cores
+
 
 **Example 1. Original-style invocation**
 

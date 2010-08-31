@@ -62,33 +62,6 @@ start_link(Options) when is_list(Options) ->
     
     Options1 = proplists:delete(name, Options),
     
-    Init = fun(Options) -> 
-        Id = proplists:get_value(worker_id, Options),
-        Name = lists:flatten([
-                              atom_to_list(proplists:get_value(name, Options)),
-                              "server",
-                              integer_to_list(Id), "@localhost"
-                             ]),
-        io:format("Initing ~p~n", [Name]),
-        CmdLine = ["/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/bin/java -Dfile.encoding=MacRoman -classpath /System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/Deploy.bundle/Contents/Resources/Java/deploy.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/dt.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/javaws.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/jce.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/management-agent.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/plugin.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/sa-jdi.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/alt-rt.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/charsets.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jconsole.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/jsse.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Classes/ui.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/apple_provider.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/dnsns.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/localedata.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/sunjce_provider.jar:/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/sunpkcs11.jar:/Users/dmitriid/Projects/java/mine/erlang/out/production/erlang:/opt/local/lib/erlang/lib/jinterface-1.5.3/priv:/opt/local/lib/erlang/lib/jinterface-1.5.3/priv/OtpErlang.jar:/Users/dmitriid/Projects/java/mine/erlang/libs:/Users/dmitriid/Projects/java/mine/erlang/libs/jargs.jar com.dmitriid.java.ErlangServer -n ",
-                   Name, " -m box"],
-        spawn(fun() -> os:cmd(CmdLine) end),
-        list_to_atom(Name)
-    end,
-
-    Main = fun(Data) -> 
-                   io:format("Calling ~p~n", [Data]),
-                   {box, Data} ! {self(), aaa},
-                   receive
-                       R ->
-                           io:format("Rerceived ~p on ~p~n", [R,Data]),
-                           R
-                   after
-                       10000 -> error_timeout
-                   end
-           end,
-                           
-    
     supervisor:start_link({local, ServerName}, ?MODULE, Options1 ++ [{name, Server}]);
 start_link(WCount) ->
     start_link([{name, ?SERVER}, {worker_count, WCount}]).
