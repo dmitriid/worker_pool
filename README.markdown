@@ -1,6 +1,10 @@
-A description of RabbitMQ's worker pool can be found here: [http://www.lshift.net/blog/2010/03/29/on-the-limits-of-concurrency-worker-pools-in-erlang](http://www.lshift.net/blog/2010/03/29/on-the-limits-of-concurrency-worker-pools-in-erlang)
+To quote:
 
-Limitation to RabbitMQ's worker pool are as follows:
+>A worker pool is a very common pattern, and they exist in the standard libraries for many languages. The idea is simple: submit some sort of closure to a service which commits to running the closure in the future in some thread. Normally the work is shared out among many different threads and in the absence of anything fancier, one assumes a first-come-first-served queue of closures.
+
+RabitMQ's codebase contains exactly such a worker pool. A description of RabbitMQ's worker pool can be found here: [http://www.lshift.net/blog/2010/03/29/on-the-limits-of-concurrency-worker-pools-in-erlang](http://www.lshift.net/blog/2010/03/29/on-the-limits-of-concurrency-worker-pools-in-erlang)
+
+Limitations of RabbitMQ's worker pool are as follows:
 
 * only one can be created within the running application
 * you have to supply the pool with the function you want to run each time you invoke it
